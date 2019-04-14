@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 4785773066689328}
   - component: {fileID: 114587655700684458}
   m_Layer: 10
-  m_Name: WeaponArms
+  m_Name: WeaponSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1085,7 +1085,7 @@ MonoBehaviour:
   damage: 10
   maxAmmo: 500
   maxClip: 30
-  recoil: 1
+  recoil: 5
   range: 10
   shootRate: 0.1
   lineDelay: 0.1
@@ -1149,7 +1149,7 @@ MonoBehaviour:
   damage: 10
   maxAmmo: 500
   maxClip: 30
-  recoil: 1
+  recoil: 5
   range: 10
   shootRate: 0.1
   lineDelay: 0.1

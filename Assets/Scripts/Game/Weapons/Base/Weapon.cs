@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     public int damage = 10;
     public int maxAmmo = 500;
     public int maxClip = 30;
+    public float spread = 2f;
     public float recoil = 1f;
     public float range = 10f;
     public float shootRate = .2f;
@@ -101,7 +102,7 @@ public class Weapon : MonoBehaviour
         // Spawn bullet
         GameObject clone = Instantiate(bulletPrefab, shotOrigin.position, shotOrigin.rotation);
         Bullet bullet = clone.GetComponent<Bullet>();
-        bullet.Fire(start, end);
+        bullet.Fire(start, end, hit.normal);
     }
     #endregion
 }
