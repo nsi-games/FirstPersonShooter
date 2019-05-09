@@ -24,10 +24,6 @@ public class Player : MonoBehaviour
     [Header("Weapons")]
     public float switchDelay = 15f; // In Milliseconds
 
-    [Header("UI")]
-    public GameObject interactUIPrefab;
-    public Transform interactUIParent;
-
     [Header("References")]
     public CameraLook cameraLook;
     public Camera attachedCamera;
@@ -40,22 +36,18 @@ public class Player : MonoBehaviour
     private CharacterController controller;
     private Vector3 movement;
 
-    // UI
-    private GameObject interactUI;
-    private TextMeshProUGUI interactText;
-
     // Weapons
     public Weapon currentWeapon;
     private List<Weapon> weapons = new List<Weapon>();
     private int currentWeaponIndex = 0;
 
-    private List<Ray> testRays = new List<Ray>();
+    private Collider collider;
 
     void Awake()
     {
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-        CreateUI();
+        collider = GetComponent<Collider>();
         RegisterWeapons();
     }
     void Start()
@@ -85,11 +77,6 @@ public class Player : MonoBehaviour
     }
 
     #region Initialization
-    void CreateUI()
-    {
-        interactUI = Instantiate(interactUIPrefab, interactUIParent);
-        interactText = interactUI.GetComponentInChildren<TextMeshProUGUI>();
-    }
     void RegisterWeapons()
     {
         weapons = new List<Weapon>(GetComponentsInChildren<Weapon>());
@@ -189,34 +176,6 @@ public class Player : MonoBehaviour
 
         controller.Move(movement * Time.deltaTime);
     }
-    void Interact()
-    {
-        interactUI.SetActive(false);
-        // Create a ray from centre of camera
-        Ray interactRay = attachedCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, .5f));
-        RaycastHit hit;
-        // Shoot ray in a range
-        if (Physics.Raycast(interactRay, out hit, interactRange))
-        {
-            Collider col = hit.collider;
-            // Try getting IInteractable from Collider
-            IInteractable interact = col.GetComponent<IInteractable>();
-            // Is there an interactable object available
-            if (interact != null)
-            {
-                // Enable Interact UI
-                interactUI.SetActive(true);
-                // Change text to item's title
-                interactText.text = interact.GetTitle();
-                // Get input from user
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    // Try getting Item from Collider
-                    interact.Pickup();
-                }
-            }
-        }
-    }
     void Shooting()
     {
         // Is a current weapon selected
@@ -228,7 +187,7 @@ public class Player : MonoBehaviour
                 if (currentWeapon.canShoot)
                 {
                     // Shoot the current weapon
-                    currentWeapon.Shoot();
+                    currentWeapon.Shoot(collider);
 
                     Vector3 direction = Vector3.up * 2f;
                     direction.x = Random.Range(-1f, 1f);
@@ -271,7 +230,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
-        Interact();
         Switching();
     }
 
